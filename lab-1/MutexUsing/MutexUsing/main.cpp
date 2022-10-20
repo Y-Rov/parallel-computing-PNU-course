@@ -28,13 +28,13 @@ void RunThirdTask(MutexedList& list)
 
 int main()
 {
-	//// Task 1
-	//std::thread first_thread(Thread1);
-	//std::thread second_thread(Thread2);
+	// Task 1
+	std::thread first_thread(Thread1);
+	std::thread second_thread(Thread2);
 
-	//// Task 2
-	//first_thread.detach();
-	//second_thread.detach();
+	// Task 2
+	first_thread.detach();
+	second_thread.detach();
 
 	// Task 3
 	MutexedList list;
