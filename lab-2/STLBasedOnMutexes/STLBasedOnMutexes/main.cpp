@@ -1,8 +1,9 @@
 #include "MutexedList.h"
+#include "exchangePerson.h"
 
 #include <thread>
 
-int main()
+void Task1()
 {
 	MutexedList list;
 
@@ -17,6 +18,20 @@ int main()
 		first_thread_with_list.detach();
 		second_thread_with_list.detach();
 	}
+}
+
+int main()
+{
+	//Task1();
+	exchangePerson person1, person2;
+	std::thread first_thread_with_person(&exchangePerson::JohnDoe, std::ref(person1));
+	std::thread second_thread_with_person(&exchangePerson::JacobSmith, std::ref(person1));
+	std::thread third_thread_with_person(&exchangePerson::JohnDoe, std::ref(person2));
+	std::thread fourth_thread_with_person(&exchangePerson::JacobSmith, std::ref(person2));
+
+	std::thread person_swap_thread(&exchangePerson::Swap, std::ref(person1), std::ref(person2));
+
+	person_swap_thread.join();
 
 	system("pause");
 	return 0;
