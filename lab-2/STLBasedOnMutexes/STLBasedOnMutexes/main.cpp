@@ -18,11 +18,11 @@ void Task1()
 		first_thread_with_list.detach();
 		second_thread_with_list.detach();
 	}
+	system("pause");
 }
 
-int main()
+void Tasks2And3()
 {
-	//Task1();
 	exchangePerson person1, person2;
 
 	std::thread first_thread_with_person(&exchangePerson::JohnDoe, std::ref(person1));
@@ -39,7 +39,12 @@ int main()
 
 	std::thread person_swap_thread(&exchangePerson::Swap, std::ref(person1), std::ref(person2));
 	person_swap_thread.join();
+}
 
-	//system("pause");
+int main()
+{
+	//Task1();
+	Tasks2And3();
+
 	return 0;
 }
