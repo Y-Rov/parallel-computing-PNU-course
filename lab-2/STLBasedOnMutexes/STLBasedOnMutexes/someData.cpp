@@ -23,8 +23,6 @@ someData & someData::operator=(someData && other)
 		surname_ = std::move(other.surname_);
 		address_ = std::move(other.address_);
 		age_ = std::move(other.age_);
-
-		//other.age_ = 0;
 	}
 	return *this;
 }

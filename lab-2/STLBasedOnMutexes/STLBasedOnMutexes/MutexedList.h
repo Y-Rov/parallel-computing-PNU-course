@@ -16,4 +16,3 @@ private:
 	std::list<int> data_;
 	std::mutex mutex_for_data_;
 };
-

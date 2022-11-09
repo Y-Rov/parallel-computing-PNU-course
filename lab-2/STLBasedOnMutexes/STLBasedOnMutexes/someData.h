@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 
 class someData
@@ -20,4 +21,3 @@ private:
 	std::string address_;
 	int age_;
 };
-

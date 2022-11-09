@@ -1,4 +1,5 @@
 #pragma once
+
 #include "someData.h"
 
 #include <mutex>
@@ -14,4 +15,3 @@ private:
 	someData data_;
 	std::mutex mutex_for_data_;
 };
-
