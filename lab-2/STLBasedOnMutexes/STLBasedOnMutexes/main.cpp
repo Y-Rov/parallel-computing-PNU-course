@@ -40,6 +40,6 @@ int main()
 	std::thread person_swap_thread(&exchangePerson::Swap, std::ref(person1), std::ref(person2));
 	person_swap_thread.join();
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
