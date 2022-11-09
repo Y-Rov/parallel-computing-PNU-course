@@ -24,13 +24,20 @@ int main()
 {
 	//Task1();
 	exchangePerson person1, person2;
+
 	std::thread first_thread_with_person(&exchangePerson::JohnDoe, std::ref(person1));
-	std::thread second_thread_with_person(&exchangePerson::JacobSmith, std::ref(person1));
-	std::thread third_thread_with_person(&exchangePerson::JohnDoe, std::ref(person2));
+	first_thread_with_person.detach();
+
+	std::thread second_thread_with_person(&exchangePerson::JacobSmith, std::ref(person2));
+	second_thread_with_person.detach();
+
+	std::thread third_thread_with_person(&exchangePerson::JohnDoe, std::ref(person1));
+	third_thread_with_person.detach();
+
 	std::thread fourth_thread_with_person(&exchangePerson::JacobSmith, std::ref(person2));
+	fourth_thread_with_person.detach();
 
 	std::thread person_swap_thread(&exchangePerson::Swap, std::ref(person1), std::ref(person2));
-
 	person_swap_thread.join();
 
 	system("pause");

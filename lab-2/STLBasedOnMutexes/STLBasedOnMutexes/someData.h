@@ -7,8 +7,12 @@ public:
 	someData() = default;
 	~someData() = default;
 
+	someData(someData && other);
+
 	void SetAllFields(std::string name, std::string surname, std::string address, int age);
-	friend std::ostream& operator<<(std::ostream& os, const someData& data);
+
+	friend std::ostream & operator<<(std::ostream & os, const someData & data);
+	someData & operator=(someData && other);
 
 private:
 	std::string name_;

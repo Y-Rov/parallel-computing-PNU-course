@@ -6,9 +6,9 @@
 class exchangePerson
 {
 public:
-	static void JohnDoe(exchangePerson& person);
-	static void JacobSmith(exchangePerson& person);
-	static void Swap(exchangePerson& lhs, exchangePerson& rhs);
+	static void JohnDoe(exchangePerson & person);
+	static void JacobSmith(exchangePerson & person);
+	static void Swap(exchangePerson & lhs, exchangePerson & rhs);
 
 private:
 	someData data_;
