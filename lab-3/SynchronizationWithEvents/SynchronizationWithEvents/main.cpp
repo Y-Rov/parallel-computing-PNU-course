@@ -86,6 +86,39 @@ void Waits()
 	std::cout << "'Waits' function leaves the standby state\n";
 }
 
+// Task 3
+void Notify()
+{
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	const int kThreadCount = 3;
+	for (size_t i = 0; i < kThreadCount; i++)
+	{
+		global_variable = 1;
+		global_variable_cond.notify_one();
+	}
+}
+
+void Thread1()
+{
+	std::unique_lock<std::mutex> lock_for_global_variable(mutex_for_global_variable);
+	global_variable_cond.wait(lock_for_global_variable, check_global_variable);
+	std::cout << "Message from Thread1\n";
+}
+
+void Thread2()
+{
+	std::unique_lock<std::mutex> lock_for_global_variable(mutex_for_global_variable);
+	global_variable_cond.wait(lock_for_global_variable, check_global_variable);
+	std::cout << "Message from Thread2\n";
+}
+
+void Thread3()
+{
+	std::unique_lock<std::mutex> lock_for_global_variable(mutex_for_global_variable);
+	global_variable_cond.wait(lock_for_global_variable, check_global_variable);
+	std::cout << "Message from Thread3\n";
+}
+
 void Task1()
 {
 	std::thread data_preparation(DataPreparation);
@@ -108,11 +141,25 @@ void Task2()
 	awake_thread.join();
 }
 
+void Task3()
+{
+	std::thread thread1(Thread1);
+	thread1.detach();
+	std::thread thread2(Thread2);
+	thread2.detach();
+	std::thread thread3(Thread3);
+	thread3.detach();
+
+	std::thread notify(Notify);
+	notify.join();
+}
+
 int main()
 {
-	Task1();
+	//Task1();
 	//Task2();
-
+	Task3();
+	
 	system("pause");
 	return 0;
 }
