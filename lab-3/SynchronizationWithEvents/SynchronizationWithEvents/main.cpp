@@ -119,6 +119,55 @@ void Thread3()
 	std::cout << "Message from Thread3\n";
 }
 
+// Task 4
+std::condition_variable global_queue_cond;
+std::mutex mutex_for_queue;
+std::queue<int> global_queue_v2;
+
+void DataPreparationV2()
+{
+	std::cout << "Enter some integer numbers: ";
+	std::string str;
+	std::getline(std::cin, str);
+	std::istringstream sstr(str);
+	int number;
+	while (sstr >> number)
+	{
+		global_queue_v2.push(number);
+		global_queue_cond.notify_one();
+	}
+}
+
+void DataProcessingV2()
+{
+	std::unique_lock<std::mutex> lock_for_global_queue(mutex_for_queue);
+	global_queue_cond.wait(lock_for_global_queue, [] { return !global_queue_v2.empty(); });
+	while (!global_queue_v2.empty())
+	{
+		int number = global_queue_v2.front();
+		global_queue_v2.pop();
+
+		bool is_prime = true;
+		for (int i = 2; i <= number / 2; i++)
+		{
+			if (number % i == 0)
+			{
+				is_prime = false;
+				break;
+			}
+		}
+
+		if (is_prime)
+		{
+			std::cout << number << " is a prime number\n";
+		}
+		else
+		{
+			std::cout << number << " is not a prime number\n";
+		}
+	}
+}
+
 void Task1()
 {
 	std::thread data_preparation(DataPreparation);
@@ -154,12 +203,21 @@ void Task3()
 	notify.join();
 }
 
+void Task4()
+{
+	std::thread data_preparation(DataPreparationV2);
+	std::thread data_processing(DataProcessingV2);
+
+	data_preparation.detach();
+	data_processing.join();
+}
+
 int main()
 {
 	//Task1();
 	//Task2();
-	Task3();
-	
+	//Task3();
+	Task4();
 	system("pause");
 	return 0;
 }
