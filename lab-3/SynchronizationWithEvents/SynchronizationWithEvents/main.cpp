@@ -40,6 +40,12 @@ void DataProcessing()
 		int number = global_queue.front();
 		global_queue.pop();
 
+		if (number <= 1)
+		{
+			std::cout << number << " is not a prime number\n";
+			continue;
+		}
+
 		bool is_prime = true;
 		for (int i = 2; i <= number / 2; i++)
 		{
@@ -150,6 +156,12 @@ void DataProcessingV2()
 	{
 		int number = global_queue_v2.front();
 		global_queue_v2.pop();
+
+		if (number <= 1)
+		{
+			std::cout << number << " is not a prime number\n";
+			continue;
+		}
 
 		bool is_prime = true;
 		for (int i = 2; i <= number / 2; i++)
