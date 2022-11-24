@@ -3,17 +3,17 @@
 #include <iostream>
 #include <vector>
 
-const int kAmountOfPrimeNumber = 1'025'000;
+const int kMaxPrimeNumber = 15'485'917;
 
 std::vector<int> GetPrimeNumbersVector()
 {
-	std::vector<bool> is_prime(kAmountOfPrimeNumber, true);
+	std::vector<bool> is_prime(kMaxPrimeNumber, true);
 
-	for (int p = 2; p * p < kAmountOfPrimeNumber; p++)
+	for (int p = 2; p * p < kMaxPrimeNumber; p++)
 	{
 		if (is_prime[p] == true)
 		{
-			for (int i = p * p; i < kAmountOfPrimeNumber; i += p)
+			for (int i = p * p; i < kMaxPrimeNumber; i += p)
 			{
 				is_prime[i] = false;
 			}
@@ -21,7 +21,7 @@ std::vector<int> GetPrimeNumbersVector()
 	}
 
 	std::vector<int> prime_numbers;
-	for (int p = 2; p < kAmountOfPrimeNumber; p++)
+	for (int p = 2; p < kMaxPrimeNumber; p++)
 	{
 		if (is_prime[p]) 
 		{
@@ -33,7 +33,7 @@ std::vector<int> GetPrimeNumbersVector()
 
 void GameWithUser(int enteredIndex)
 {
-	std::cout << "While the prime number is calculating, please, we can calculate the one of available mathematical operations: \n";
+	std::cout << "While the searching of the prime number is in progress, you can choose and calculate the one of available mathematical operations:\n";
 	std::cout << "SQRT(n) - press '1'\nSIN(n) - press '2'\nLN(n) - press '3'\n";
 	std::cout << "Choose the operation: ";
 	int operation;
@@ -52,16 +52,30 @@ void GameWithUser(int enteredIndex)
 		default:
 			break;
 	}
+	std::cout << "OK, we still waiting for the result...\n";
+}
+
+void Task1DefferedAsync(int enteredPrimeIndex)
+{
+	std::future<std::vector<int>> deferred_result = std::async(std::launch::deferred, GetPrimeNumbersVector);
+	GameWithUser(enteredPrimeIndex);
+	std::cout << "The result is " << deferred_result.get()[enteredPrimeIndex - 1] << '\n';
+}
+
+void Task1RealAsync(int enteredPrimeIndex)
+{
+	std::future<std::vector<int>> async_result = std::async(std::launch::async, GetPrimeNumbersVector);
+	GameWithUser(enteredPrimeIndex);
+	std::cout << "The result is " << async_result.get()[enteredPrimeIndex - 1] << '\n';
 }
 
 int main()
 {
-	int primeNumberIndex = 0;
-	std::cout << "Enter the index of a prime number that you want to know (n): ";
+	int primeNumberIndex = 1;
+	std::cout << "Enter the index of a prime number that you want to know (n <= 1000000): ";
 	std::cin >> primeNumberIndex;
-	std::vector<int> result = GetPrimeNumbersVector();
-	//GameWithUser(primeNumberIndex);
-	std::cout << result[primeNumberIndex] << '\n';
+	//Task1DefferedAsync(primeNumberIndex);
+	Task1RealAsync(primeNumberIndex);
 	system("pause");
 	return 0;
 }
