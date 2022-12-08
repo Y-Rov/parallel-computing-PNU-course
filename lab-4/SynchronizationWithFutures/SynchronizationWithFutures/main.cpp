@@ -1,4 +1,3 @@
-#include <condition_variable>
 #include <deque>
 #include <future>
 #include <mutex>
@@ -33,7 +32,7 @@ int GetPrimeNumberByIndex(int index)
 			prime_numbers.push_back(p);
 		}	
 	}
-	return prime_numbers[index];
+	return prime_numbers[index - 1];
 }
 
 void GameWithUser(int enteredIndex)
@@ -62,20 +61,20 @@ void GameWithUser(int enteredIndex)
 
 void Task1DefferedAsync()
 {
-	int prime_number_index = 1;
-	std::cout << "Enter the index of a prime number (n <= 1000000): ";
+	int prime_number_index;
+	std::cout << "Enter the index of a prime number (1 <= n <= 1000000): ";
 	std::cin >> prime_number_index;
-	std::future<int> deferred_result = std::async(std::launch::deferred, GetPrimeNumberByIndex, prime_number_index - 1);
+	std::future<int> deferred_result = std::async(std::launch::deferred, GetPrimeNumberByIndex, prime_number_index);
 	GameWithUser(prime_number_index);
 	std::cout << "The result is " << deferred_result.get() << '\n';
 }
 
 void Task1RealAsync()
 {
-	int prime_number_index = 1;
-	std::cout << "Enter the index of a prime number (n <= 1000000): ";
+	int prime_number_index;
+	std::cout << "Enter the index of a prime number (1 <= n <= 1000000): ";
 	std::cin >> prime_number_index;
-	std::future<int> async_result = std::async(std::launch::async, GetPrimeNumberByIndex, prime_number_index - 1);
+	std::future<int> async_result = std::async(std::launch::async, GetPrimeNumberByIndex, prime_number_index);
 	GameWithUser(prime_number_index);
 	std::cout << "The result is " << async_result.get() << '\n';
 }
@@ -93,25 +92,25 @@ void Calculation()
 	do
 	{
 		std::packaged_task<int(int)> prime_number_task;
+
 		std::unique_lock<std::mutex> thread_lock(defensive_mutex);
-		
 		prime_number_task = std::move(tasks.front());
 		tasks.pop_front();
 		int prime_number_index = prime_number_indexes.front();
 		prime_number_indexes.pop_front();
 		thread_lock.unlock();
 
-		prime_number_task(prime_number_index - 1);
+		prime_number_task(prime_number_index);
 	} while (!tasks.empty() && !prime_number_indexes.empty());
 }
 
 void Task2()
 {
 	std::thread independent_thread;
-	int prime_number_index = 1;
+	int prime_number_index;
 	std::vector<std::future<int>> results;
 	bool start_flag = true;
-	std::cout << "Enter the index of a prime number (n <= 1000000, -1 - to stop): ";
+	std::cout << "Enter the index of a prime number (1 <= n <= 1000000, -1 - to stop): ";
 	std::cin >> prime_number_index;
 	while (prime_number_index != -1)
 	{
@@ -128,7 +127,7 @@ void Task2()
 			independent_thread = std::thread(Calculation);
 			start_flag = false;
 		}
-		std::cout << "Enter the index of a prime number (n <= 1000000, -1 - to stop): ";
+		std::cout << "Enter the index of a prime number (1 <= n <= 1000000, -1 - to stop): ";
 		std::cin >> prime_number_index;
 	}
 
@@ -153,13 +152,55 @@ void Task2()
 
 // ---------------------- TASK 3 BEGIN --------------------------------
 
+void Thread1FromTask3(int prime_num_index, std::promise<int> prime_num_promise, std::promise<int> mult_prime_num_promise,
+	std::promise<bool> promise_for_second_thread)
+{
+	prime_num_promise.set_value(GetPrimeNumberByIndex(prime_num_index));
+	promise_for_second_thread.set_value(true);
+	mult_prime_num_promise.set_value(GetPrimeNumberByIndex(prime_num_index * 10));
+}
+
+void Thread2FromTask3(int prime_num_index, std::future<bool> first_thread_ready_flag)
+{
+	if (first_thread_ready_flag.get())
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(2));
+		std::cout << "SQRT(" << prime_num_index << ") = " << std::sqrt(prime_num_index) << '\n';
+	}
+}
+
+void Task3()
+{
+	int prime_number_index;
+	std::cout << "Enter the index of a prime number (1 <= n <= 1000000): ";
+	std::cin >> prime_number_index;
+	
+	std::promise<int> prime_number_promise;
+	std::future<int> prime_num_result = prime_number_promise.get_future();
+	std::promise<bool> promise_for_second_thread;
+	std::future<bool> second_promise_result = promise_for_second_thread.get_future();
+	std::promise<int> mult_prime_number_promise;
+	std::future<int> mult_prime_num_result = mult_prime_number_promise.get_future();
+	
+	std::thread first_thread(Thread1FromTask3, prime_number_index, std::move(prime_number_promise),
+		std::move(mult_prime_number_promise), std::move(promise_for_second_thread));
+	std::thread second_thread(Thread2FromTask3, prime_number_index, std::move(second_promise_result));
+
+	std::cout << prime_number_index << "-th prime number is " << prime_num_result.get() << '\n';
+	std::cout << prime_number_index * 10 << "-th prime number is " << mult_prime_num_result.get() << '\n';
+	
+	first_thread.join();
+	second_thread.join();
+}
+
+// ---------------------- TASK 3 END ----------------------------------
 
 int main()
 {
 	//Task1DefferedAsync();
 	//Task1RealAsync();
-	Task2();
-
+	//Task2();
+	Task3();
 	system("pause");
 	return 0;
 }
