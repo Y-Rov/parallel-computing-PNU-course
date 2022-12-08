@@ -6,7 +6,10 @@
 #include <vector>
 
 // ---------------------- TASK 1 BEGIN -------------------------------
+// 1'000'000-th prime number
 //const int kMaxPrimeNumber = 15'485'917;
+
+// ~ 25'000-th prime number
 const int kMaxPrimeNumber = 305'597;
 
 int GetPrimeNumberByIndex(int index)
@@ -64,6 +67,7 @@ void Task1DefferedAsync()
 	int prime_number_index;
 	std::cout << "Enter the index of a prime number (1 <= n <= 1000000): ";
 	std::cin >> prime_number_index;
+	std::cout << "Deferred async\n";
 	std::future<int> deferred_result = std::async(std::launch::deferred, GetPrimeNumberByIndex, prime_number_index);
 	GameWithUser(prime_number_index);
 	std::cout << "The result is " << deferred_result.get() << '\n';
@@ -74,6 +78,7 @@ void Task1RealAsync()
 	int prime_number_index;
 	std::cout << "Enter the index of a prime number (1 <= n <= 1000000): ";
 	std::cin >> prime_number_index;
+	std::cout << "Async async\n";
 	std::future<int> async_result = std::async(std::launch::async, GetPrimeNumberByIndex, prime_number_index);
 	GameWithUser(prime_number_index);
 	std::cout << "The result is " << async_result.get() << '\n';
