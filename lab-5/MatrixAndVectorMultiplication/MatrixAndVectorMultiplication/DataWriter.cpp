@@ -43,7 +43,6 @@ void DataWriter::write_vector_to_file(const std::string path, const std::vector<
 
 void DataWriter::write_matrix_to_screen(const std::vector<std::vector<int>>& matrix)
 {
-	std::cout << "Random generated matrix:\n";
 	for (size_t i = 0; i < matrix.size(); i++)
 	{
 		std::vector<int> matrix_row = matrix[i];
@@ -63,7 +62,6 @@ void DataWriter::write_matrix_to_screen(const std::vector<std::vector<int>>& mat
 
 void DataWriter::write_vector_to_screen(const std::vector<int>& column_vector)
 {
-	std::cout << "Random generated column vector:\n";
 	for (size_t i = 0; i < column_vector.size(); i++)
 	{
 		std::cout << column_vector[i] << '\n';

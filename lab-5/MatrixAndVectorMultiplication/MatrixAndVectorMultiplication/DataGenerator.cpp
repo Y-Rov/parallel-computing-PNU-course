@@ -3,6 +3,8 @@
 
 #include <cstdlib>
 
+size_t DataGenerator::ROW_MAX = 12;
+
 std::vector<std::vector<int>> DataGenerator::generate_random_matrix(size_t row_count, size_t col_count)
 {
 	std::vector<std::vector<int>> matrix(row_count);

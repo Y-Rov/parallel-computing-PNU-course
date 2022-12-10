@@ -126,14 +126,12 @@
     <ClCompile Include="DataGenerator.cpp" />
     <ClCompile Include="DataReader.cpp" />
     <ClCompile Include="DataWriter.cpp" />
-    <ClCompile Include="DivisionByRows.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataGenerator.h" />
     <ClInclude Include="DataReader.h" />
     <ClInclude Include="DataWriter.h" />
-    <ClInclude Include="DivisionByRows.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
