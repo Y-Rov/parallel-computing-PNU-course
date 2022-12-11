@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 
+size_t DataWriter::ROW_MAX_VALUE = 12;
+
 void DataWriter::write_matrix_to_file(const std::string path, const std::vector<std::vector<int>>& matrix)
 {
 	std::ofstream input_data_file(path);
@@ -32,6 +34,7 @@ void DataWriter::write_vector_to_file(const std::string path, const std::vector<
 	std::ofstream input_data_file(path, std::ios_base::app);
 	if (input_data_file.is_open())
 	{
+		input_data_file << '\n';
 		for (size_t i = 0; i < column_vector.size(); i++)
 		{
 			input_data_file << column_vector[i] << '\n';
