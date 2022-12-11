@@ -31,11 +31,11 @@ std::vector<int> CalculateRowMultiplication(std::vector<std::vector<int>>& matri
 	for (size_t i = 0, counter = 0; i < kQuantityOfThreads; i++, counter += kQuantityOfRowStripes)
 	{
 		auto begin_iterator = matrix.begin() + counter;
-		auto end_iterator = counter < kQuantityOfThreads * kQuantityOfRowStripes - 1
-			? begin_iterator + kQuantityOfRowStripes
-			: matrix.end();
+		auto end_iterator = i < kQuantityOfThreads - 1 ? begin_iterator + kQuantityOfRowStripes
+							: matrix.end();
 
-		future_results[i] = std::async(std::launch::async, RowMultiplication, begin_iterator, end_iterator, column_vector);
+		future_results[i] = std::async(std::launch::async, RowMultiplication, begin_iterator, end_iterator,
+			column_vector);
 	}
 
 	std::vector<int> result_vector(matrix.size());
@@ -75,9 +75,8 @@ std::vector<int> CalculateColumnMultiplication(const std::vector<std::vector<int
 	for (size_t i = 0, counter = 0; i < kQuantityOfThreads; i++, counter += kQuantityOfColumnStripes)
 	{
 		size_t start_index = counter;
-		size_t end_index = counter < kQuantityOfThreads * kQuantityOfColumnStripes - 1
-			? counter + kQuantityOfColumnStripes
-			: matrix[0].size();
+		size_t end_index = i < kQuantityOfThreads - 1 ? counter + kQuantityOfColumnStripes
+							: matrix[0].size();
 
 		future_results[i] = std::async(std::launch::async, ColumnMultiplication, std::cref(matrix),
 			column_vector, start_index, end_index);
@@ -137,7 +136,6 @@ void DataPreparation(const std::string &path_to_matrix, const std::string &path_
 	}
 }
 
-
 void DataProcessing(std::vector<std::vector<int>>& matrix, const std::vector<int>& column_vector,
 	int type_of_multiplication)
 {
@@ -189,40 +187,6 @@ int main()
 
 	DataProcessing(matrix, column_vector, type_of_multiplication);
 
-	///*std::vector<std::vector<int>> matrix_from_file = data_reader.read_matrix_from_file("M1_V2.txt");
-	//std::vector<int> vector_from_file = data_reader.read_vector_from_file("V1_V2.txt");
-
-	//std::vector<int> result_vector = CalculateRowMultiplication(matrix_from_file, vector_from_file);*/
-
-	//std::vector<std::vector<int>> second_matrix_from_file = data_reader.read_matrix_from_file("M2_V2.txt");
-	//std::vector<int> second_vector_from_file = data_reader.read_vector_from_file("V2_V2.txt");
-
-	//std::vector<int> result_vector = CalculateColumnMultiplication(second_matrix_from_file, second_vector_from_file);
-
-	//DataWriter data_writer;
-	//if (result_vector.size() <= DataWriter::ROW_MAX_VALUE)
-	//{
-	//	std::cout << "Result vector:\n";
-	//	data_writer.write_vector_to_screen(result_vector);
-	//}
-	//else
-	//{
-	//	data_writer.write_vector_to_file("Result.txt", result_vector);
-	//}
-
-	/*std::cout << "Enter the matrix size:\n" << "Count of rows: ";
-	size_t row_count, col_count;
-	std::cin >> row_count;
-	std::cout << "Count of columns: ";
-	std::cin >> col_count;*/
-
-	//std::vector<std::vector<int>> matrix_from_keyboard = data_reader.read_matrix_from_keyboard(row_count, col_count);
-	//std::vector<int> vector_from_keyboard = data_reader.read_vector_from_keyboard(col_count);
-
-	/*DataGenerator data_generator;
-	
-	std::vector<std::vector<int>> random_matrix = data_generator.generate_random_matrix(row_count, col_count);
-	std::vector<int> random_column_vector = data_generator.generate_random_vector(col_count);*/
 	system("pause");
 	return 0;
 }
